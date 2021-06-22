@@ -170,6 +170,7 @@ export async function SearchLogin(
     {
       _id: 1,
       password: 1,
+      active: 1,
     }
   );
   return user;

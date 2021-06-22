@@ -8,7 +8,7 @@ export async function loginADM(req: Request, res: Response): Promise<Response> {
     let user: IUserADM | null = await libValidUserADM.SearchLogin(
       req.body.params
     );
-    if (!user || !(await user.validators(req.body.password))) {
+    if (!user || !(await user.validators(req.body.password)) || !user.active) {
       return res.status(401).json({
         type: `ERROR`,
         message: "Wrong Date",
