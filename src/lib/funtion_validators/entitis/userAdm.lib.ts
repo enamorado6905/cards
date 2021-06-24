@@ -171,6 +171,7 @@ export async function SearchLogin(
       _id: 1,
       password: 1,
       active: 1,
+      rol: 1,
     }
   );
   return user;
@@ -213,7 +214,7 @@ export async function GETADMS(req: Request, res: Response): Promise<Response> {
 }
 export async function GETADM(req: Request, res: Response): Promise<Response> {
   try {
-    let user: IUserADM | null = await UserADMID(req.params.id);
+    let user = await UserADMID(req.params.id);
     if (!user) {
       return res.status(404).json({
         type: `ERROR`,

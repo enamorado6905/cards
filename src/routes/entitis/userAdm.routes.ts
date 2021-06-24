@@ -7,7 +7,7 @@ router.get("/users", middRol.isADM, controUserADM.GETUSERADMS);
 router.get("/users/:id", middRol.isADM, controUserADM.GETUSERADM);
 router.get("/search", middRol.isADM, controUserADM.SEARCHUSERADM);
 router.post("/user", middRol.isADM, controUserADM.ADDUSERADM);
-router.delete("/user", middRol.isADM, controUserADM.DELETEUSERADM);
+router.post("/deleteuser", middRol.isADM, controUserADM.DELETEUSERADM);
 router.patch("/user", middRol.isADM, controUserADM.EDITUSERADM);
 router.patch(
   "/addphoto",

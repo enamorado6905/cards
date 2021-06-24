@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import path from "path";
 const app = express();
 
 /* ===================================== Import Validators ================================ */
@@ -55,5 +56,8 @@ app.use("/imagen", routerphotos.default);
 /* ================================ Router Authentication ================================= */
 app.use("/auth", routerAuth.default);
 /* ================================ Router Authentication ================================= */
+/* ===== this folders for this application will be used to store public file images ======= */
+app.use("/photo", express.static(path.resolve("photo")));
+/* ==== this folders for this application will be used to store public file images ======== */
 
 export default app;

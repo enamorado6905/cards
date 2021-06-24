@@ -6,6 +6,7 @@ const router = Router();
 router.get("/users", middRol.isADM, controUser.GETUSERS);
 router.get("/users/:id", middRol.isALLUSER, controUser.GETUSER);
 router.get("/search", middRol.isADM, controUser.SEARCHUSER);
+router.post("/deleteuser", middRol.isADM, controUser.DELETEUSER);
 router.post("/user", middRol.isALLUSER, controUser.ADDUSER);
 router.post("/validatoruser", middRol.isALLUSER, controUser.VALIDUSERADD);
 router.post("/validatoruser/:id", middRol.isALLUSER, controUser.VALIDUSEREDIT);
@@ -15,12 +16,7 @@ router.post(
   middRol.isALLUSER,
   controUser.VALIDEMAILEDIT
 );
-router.delete("/user", middRol.isADM, controUser.DELETEUSER);
 router.patch("/user", middRol.isALLUSER, controUser.EDITUSER);
 router.patch("/editrol", middRol.isADM, controUser.EDITROLUSER);
-router.patch(
-  "/editpassword",
-  middRol.isALLUSER,
-  controUser.EDITPASSWORDUSER
-);
+router.patch("/editpassword", middRol.isALLUSER, controUser.EDITPASSWORDUSER);
 export default router;

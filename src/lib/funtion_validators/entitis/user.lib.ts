@@ -195,12 +195,14 @@ export async function ADDUSER(req: Request, res: Response): Promise<Response> {
       password: req.body.password,
       active: req.body.active,
     };
-    if (!(await libValidRol.RolID(newUser.rol))) {
+    const rol = await modelsRol.findOne({ name: "USER" });
+    if (!rol) {
       return res.status(400).json({
         type: "ERROR",
         message: "Wrong Date",
       });
     }
+    newUser.rol = rol._id;
     await new modelsUser(newUser).save();
     return res
       .status(201)
@@ -218,8 +220,6 @@ export async function EDITUSER(req: Request, res: Response): Promise<Response> {
       _id: req.body._id,
       name: req.body.name,
       user: req.body.user,
-      email: req.body.email,
-      active: req.body.active,
     };
     let user: IUser | null = await UserID(editUser._id);
     if (!user) {
@@ -330,9 +330,9 @@ export async function VALIDUSEREDIT(
     const { id } = req.params;
     const { user } = req.body;
     const user_: IUser | null = await UserUser(user);
-    if (user_ && user._id != id) {
+    if (user_ && user_._id != id) {
       return res.status(200).json(true);
-    } else if (user_ && user_?._id === id) {
+    } else if (user_ && user_._id === id) {
       return res.status(200).json(false);
     } else {
       return res.status(200).json(false);

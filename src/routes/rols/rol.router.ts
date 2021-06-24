@@ -3,6 +3,7 @@ import { controRol } from "../../controllers/controllers";
 import { middRol } from "../../middlewares/middlewares";
 const router = Router();
 
+router.get("/adduserrols", middRol.isADM, controRol.GETROLSADDUSER);
 router.get("/rols", middRol.isADM, controRol.GETROLS);
 router.get("/rols/:id", middRol.isADM, controRol.GETROL);
 router.get("/search", middRol.isADM, controRol.SEARCHROLS);

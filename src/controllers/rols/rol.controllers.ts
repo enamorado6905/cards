@@ -1,5 +1,12 @@
 import { Request, Response } from "express";
 import { libValidRol } from "../../lib/lib";
+
+export async function GETROLSADDUSER(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  return await libValidRol.GETROLSADDUSER(req, res);
+}
 export async function GETROLS(req: Request, res: Response): Promise<Response> {
   return await libValidRol.GETROLS(req, res);
 }

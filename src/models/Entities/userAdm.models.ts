@@ -63,7 +63,7 @@ const userschema = new Schema(
     idimgData: { type: String },
     active: {
       type: Boolean,
-      required: true,
+      default: true,
     },
   },
   {

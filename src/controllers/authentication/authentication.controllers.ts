@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { IUserADM, IUser } from "../../models/models";
-import { libValidUserADM, libValidUser } from "../../lib/lib";
+import { libValidUserADM, libValidUser, libValidRol } from "../../lib/lib";
 
 export async function loginADM(req: Request, res: Response): Promise<Response> {
   try {
@@ -14,6 +14,7 @@ export async function loginADM(req: Request, res: Response): Promise<Response> {
         message: "Wrong Date",
       });
     }
+    const rol = await libValidRol.RolID(user.rol._id);
     let token_ref: any = jwt.sign(
       { _id: user._id },
       process.env.TOKEN_SECRET || "TOKEN_TXT",
@@ -22,7 +23,7 @@ export async function loginADM(req: Request, res: Response): Promise<Response> {
       }
     );
     let token: any = jwt.sign(
-      { _id: user._id },
+      { _id: user._id, rol: rol?.name },
       process.env.TOKEN_SECRET || "TOKEN_TXT",
       {
         expiresIn: "12000s",

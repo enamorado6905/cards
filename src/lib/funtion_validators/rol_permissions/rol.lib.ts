@@ -65,6 +65,31 @@ export async function RolADMList(
     .limit(max);
   return rolADM;
 }
+export async function GETROLSADDUSER(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const rolADM: Array<IRol> | null = await modelsRol.find(
+      {},
+      {
+        name: 1,
+        active: 1,
+      }
+    );
+    if (!rolADM || rolADM.length === 0) {
+      return res
+        .status(404)
+        .json({ type: `ERROR`, message: "Not element in the DB" });
+    }
+    return res.status(200).json(rolADM);
+  } catch (error) {
+    return res.status(500).json({
+      type: `ERROR:`,
+      message: error.message,
+    });
+  }
+}
 export async function GETROLS(req: Request, res: Response): Promise<Response> {
   try {
     const obLimitMax:
