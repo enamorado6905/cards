@@ -118,7 +118,7 @@ export async function ADDPhotoADM(
         message: "Not element in the DB",
       });
     }
-    return res.status(200).json({ idimgData: id });
+    return res.status(201).json({ idimgData: id });
   } catch (error) {
     return res.status(500).json({
       type: error.type,
@@ -145,7 +145,7 @@ export async function ADDPhotoCARD(
         message: "Not element in the DB",
       });
     }
-    return res.status(200).json({ idimgData: id });
+    return res.status(201).json({ idimgData: id });
   } catch (error) {
     return res.status(500).json({
       type: error.type,

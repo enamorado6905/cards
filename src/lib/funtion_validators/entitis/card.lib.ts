@@ -80,6 +80,7 @@ async function CardList(
         price: 1,
         allCard: 1,
         idimgData: 1,
+        createdAt: 1,
       }
     )
     .skip(limit)
@@ -140,7 +141,6 @@ export async function ADDCARD(req: Request, res: Response): Promise<Response> {
       price: req.body.price,
       description: req.body.description,
       allcard: req.body.allcard,
-      active: req.body.active,
     };
     let card = new modelsCard(newCard);
     card.idimgData = await libValidPhotos.onADDPHOTOADD(
@@ -162,11 +162,10 @@ export async function EDITCARD(req: Request, res: Response): Promise<Response> {
   try {
     const editCard = {
       _id: req.body._id,
-      type: req.body.title,
+      type: req.body.type,
       description: req.body.description,
       price: req.body.price,
-      allCard: req.body.allCard,
-      active: req.body.active,
+      allcard: req.body.allcard,
     };
     let card: ICard | null = await CardID(editCard._id);
     if (!card) {
