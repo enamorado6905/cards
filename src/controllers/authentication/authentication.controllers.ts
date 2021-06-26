@@ -87,7 +87,7 @@ export async function refreshADM(
   try {
     let token: any = req.headers.token_ref;
     if (!token) {
-      return res.status(403).json({
+      return res.status(401).json({
         type: `ERROR`,
         message: "UNATHORIZE REQUEST",
       });
@@ -98,7 +98,7 @@ export async function refreshADM(
     );
     let user: IUserADM | null = await libValidUserADM.UserADMID(data._id);
     if (!user) {
-      return res.status(403).json({
+      return res.status(401).json({
         type: `ERROR`,
         message: "UNATHORIZE REQUEST",
       });
