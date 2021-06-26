@@ -129,6 +129,7 @@ export async function SearchLogin(paramSearch: string): Promise<IUser | null> {
       _id: 1,
       password: 1,
       active: 1,
+      rol: 1,
     }
   );
   return user;

@@ -52,6 +52,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
         message: "Wrong Date",
       });
     }
+    const rol = await libValidRol.RolID(user.rol._id);
     let token_ref: any = jwt.sign(
       { _id: user._id },
       process.env.TOKEN_SECRET || "TOKEN_TXT",
@@ -60,7 +61,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
       }
     );
     let token: any = jwt.sign(
-      { _id: user._id },
+      { _id: user._id, rol: rol?.name },
       process.env.TOKEN_SECRET || "TOKEN_TXT",
       {
         expiresIn: "12000s",
@@ -96,20 +97,33 @@ export async function refreshADM(
       token.toString(),
       process.env.TOKEN_SECRET || "TOKEN_TXT"
     );
-    let user: IUserADM | null = await libValidUserADM.UserADMID(data._id);
-    if (!user) {
-      return res.status(401).json({
-        type: `ERROR`,
-        message: "UNATHORIZE REQUEST",
+    let userADM: any, user: any;
+    Promise.all([
+      (userADM = await libValidUserADM.UserADMID(data._id)),
+      (user = await libValidUser.UserID(data._id)),
+    ]);
+    if (user) {
+      token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET || "", {
+        expiresIn: "12000s",
+      });
+      return res.status(200).json({
+        type: `SUSSECES`,
+        message: `Refresh Success`,
+        token,
+      });
+    } else if (userADM) {
+      token = jwt.sign({ _id: userADM._id }, process.env.TOKEN_SECRET || "", {
+        expiresIn: "12000s",
+      });
+      return res.status(200).json({
+        type: `SUSSECES`,
+        message: `Refresh Success`,
+        token,
       });
     }
-    token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET || "", {
-      expiresIn: "12000s",
-    });
-    return res.status(200).json({
-      type: `SUSSECES`,
-      message: `Refresh Success`,
-      token,
+    return res.status(401).json({
+      type: `ERROR`,
+      message: "UNATHORIZE REQUEST",
     });
   } catch (error) {
     return res.status(500).json({
