@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { modelsPrice, IPrice } from "../../../models/models";
 import { libValid, libValidUser, libValidCard } from "../../lib";
+const Stripe = require("stripe");
+const stripe = Stripe(
+  "sk_test_51J3NjsD1bGARjoEni0cJxO1JPGIJf8dEiIq9buhxn0U4C5kD40a0GG1TGQfb8CDqIZVRaR0YuSC0gsI33auE5eoT00hykuk1d1"
+);
 
 var namesPatterrn = /^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/;
 
@@ -100,16 +104,15 @@ export async function GETPRICE(req: Request, res: Response): Promise<Response> {
 export async function ADDPRICE(req: Request, res: Response): Promise<Response> {
   try {
     const newPrice = {
-      day: req.body.dayrenta,
+      day: Date.now(),
       price: req.body.price,
       user: req.body.user,
       card: req.body.card,
-      active: req.body.active,
     };
-    let user: any, card: any;
+    let user: any, card: any, payment: any;
     Promise.all([
-      (user = await libValidUser.UserID(user)),
-      (card = await libValidCard.CardID(card)),
+      (user = await libValidUser.UserID(newPrice.user)),
+      (card = await libValidCard.CardID(newPrice.card)),
     ]);
     if (!user || !card) {
       return res.status(400).json({
@@ -117,10 +120,22 @@ export async function ADDPRICE(req: Request, res: Response): Promise<Response> {
         message: "Wrong Date",
       });
     }
+    stripe.paymentIntents.create({
+      amount: parseInt(req.body.amount),
+      currency: "usd",
+      payment_method_types: ["card"],
+      function(err: any, paymentIntent: any) {
+        if (err) {
+          res.status(500).json(err.message);
+        }
+      },
+    });
     await new modelsPrice(newPrice).save();
-    return res
-      .status(201)
-      .json({ type: "SUCCESS", message: "Successfully Create" });
+    return res.status(201).json({
+      type: "SUCCESS",
+      message: "Successfully Create",
+      infopay: payment,
+    });
   } catch (error) {
     return res.status(400).json({
       type: error.type,

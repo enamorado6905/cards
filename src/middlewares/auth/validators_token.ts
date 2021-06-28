@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { modelsRol, modelsUserADM, IUserADM } from "../../models/models";
+import {
+  modelsRol,
+  modelsUserADM,
+  modelsUser,
+  IUserADM,
+} from "../../models/models";
 
 export async function token_validators_ADM(
   req: Request,
@@ -16,23 +21,34 @@ export async function token_validators_ADM(
       token.toString(),
       process.env.TOKEN_SECRET || "TOKEN_TXT"
     );
-    let user = await modelsUserADM.findById(data._id, {
-      rol: 1,
-      active: 1,
-    });
-    if (!user || !user.active) {
-      return res.status(401).json("ANUTHORIZE REQUEST");
+    let user: any, userADM: any;
+    Promise.all([
+      (user = await modelsUser.findById(data._id, {
+        rol: 1,
+        active: 1,
+      })),
+      (userADM = await modelsUserADM.findById(data._id, {
+        rol: 1,
+        active: 1,
+      })),
+    ]);
+    if (user && !userADM) {
+      await modelsRol.populate(user, {
+        path: "rol",
+        justOne: true,
+        select: ["name"],
+      });
+      req.body.ROL = user.rol;
+      return user.rol ? next() : res.status(401).json("ANUTHORIZE REQUEST");
+    } else if (userADM && !user) {
+      await modelsRol.populate(userADM, {
+        path: "rol",
+        justOne: true,
+        select: ["name"],
+      });
+      return userADM.rol ? next() : res.status(401).json("ANUTHORIZE REQUEST");
     }
-    await modelsRol.populate(user, {
-      path: "rol",
-      justOne: true,
-      select: ["name"],
-    });
-    if (!user.rol) {
-      return res.status(403).json("ANUTHORIZE REQUEST");
-    }
-    req.body.ROL = user.rol;
-    return next();
+    return res.status(401).json("ANUTHORIZE REQUEST");
   } catch (error) {
     return res
       .status(403)
